@@ -1,0 +1,5 @@
+digraph composite {
+full_name -> first_name
+full_name -> middle_name
+full_name -> last_name 
+}

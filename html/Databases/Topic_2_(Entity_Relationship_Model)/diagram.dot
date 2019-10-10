@@ -1,0 +1,7 @@
+digraph G {
+ mini_world -> reqs_specs -> conceptual_design -> logical_design -> physical_design
+reqs_specs -> functional_analysis -> physical_design
+functional_analysis -> application_program_design -> transaction_implementation -> program
+logical_design -> application_program_design
+physical_design -> internal_schema -> transaction_implementation
+}
