@@ -1,0 +1,125 @@
+Content-Type: text/x-zim-wiki
+Wiki-Format: zim 0.4
+Creation-Date: 2019-08-26T13:34:28-05:00
+
+====== Topic 2 (Entity Relationship Model) ======
+Created Monday 26 August 2019
+
+
+* Models an enterprise as a collection of **entities** and **relationships**
+	* **Entities**: a thing / object in the enterprise that is distinguishable from other objects
+		* Described by a set of **attributes**
+	* **Relationship**: an association among several entities
+* Represented diagrammatically by an //entity-relationship diagram://
+
+
+
+===== Design Process =====
+Think about it hard
+
+reqs&specs => conceptual design => logical design => physical design
+{{.\diagram.png?type=diagram}}
+
+===== Modeling =====
+* Database can be modeled as"
+	* collection of entities
+	* relationship among entities
+* An **entity **is an object that exists and is distinguishable from other objects
+	* example: person, company, event, play
+* Entities have **attributes**
+	* example: people have names
+* And **entity set** is a set of entities of the same type that share the same properties
+	* eg the set of all people. companies, holidays
+
+==== Relationship sets ====
+* A **relationship** is an association among several entities
+* A **relationship set** is a mathematical relation among n >= 2 entities, each taken from entity sets
+	* {{.\equation.png?type=equation}}
+* An **attribute** can also be a properties of a relationship set
+
+=== Degree of a relationship set ===
+* Binary relationship
+	* involve two entitiy sets (or degree two)
+	* eg //instructors teach classes//
+		* binary relationship //teach// between two entity sets //instructor// and //class//
+* Non-binary relationship
+	* Involve more than two entity sets
+
+==== Attributes ====
+* Entity is represented by a set of **attributes**
+	* descriptive properties possesed by all members of an entity set
+* **Domain: ** set of permitted values for each attribute
+* Attribute types
+	* Simple: composed of one part (eg student ID)
+	* composite: composed of several subparts
+		* eg full name
+	* Single-valued
+	* Multi-valued
+		* eg email addresses
+	* Derived attribute
+		* Computed from other attributes
+{{.\diagram001.png?type=diagram}}
+
+
+
+==== Cardinality Constraints ====
+* express the number of entities to which another entity can be associated via a relationship set
+* Most useful in describing binary relationship sets
+* if binary, mapping cardinality must be one of the following:
+	* one to one
+	* one to many
+	* many to one
+	* many to many
+
+==== Keys ====
+* A **Super key** of an entity set is a set of one or more attributes whose values uniquely determine each entity
+* A **candidate key** of an entity set is a minimal super key
+	* ID is a candidate key of instructor
+	* course_id is a candidate key of course
+* several candidate keys may exist, but one is selected to be the primary key
+
+
+====== Entity Relationship Diagrams ======
+
+* ER model:
+	* A design tool describing at the high level data and relationships among data
+* ER diagram:
+	* A graph describing data and relationships among data
+
+{{.\diagram002.png?type=diagram}}
+* Rectangles represent entity sets
+* Diamonds represent relationship sets
+* Attributes listed inside entity rectangle
+* Underline indicates primary key attributes
+{{.\2-Entity-Rel-Diagram.PNG?width=400}}
+{{.\2-ER-model-attribute-typeexample.PNG?width=400}}
+
+* Entity sets of a relationship need not be distinct
+	* each occurence of an entity set playes a 'role' in the relationship
+	* Eg below the instructor plays a 'role' in the relationship with the advisor
+
+
+* We express cardinality constraints by drawing either a directed line (->) (signifying one) or an undirected line (-) (signifying many) between the relationship set and entity set
+
+Eg: A 1-1 relationship between instructor and student 
+* an instructor is associated with at most one student via //advisor//
+* a student is associated with at most one instructor via advisor
+{{.\2-ER-one-to-one.PNG?width=400}}
+
+Eg: A many-1 relationship
+* instructor can advise one students
+* student can have many advior
+* The following diagram is the opposite of how advisors would typically work
+{{.\2-ER-many-1.PNG?width=400}}
+
+**Total particiapation **(double line): every entity in the entity set participates in at least one relationship in the relationship set
+**Partial participation:** some entities may not participate in any relationship in the relationship set
+
+Thus, we can read the below as "every student must have an advisor, but every instructor does not need to serve as an advisor"
+{{.\diagram003.png?type=diagram}}
+
+
+
+
+
+

@@ -1,0 +1,14 @@
+Content-Type: text/x-zim-wiki
+Wiki-Format: zim 0.4
+Creation-Date: 2019-10-02T13:43:20-05:00
+
+====== Free List ======
+Created Wednesday 02 October 2019
+
+The **free list** is a list of records that have been deleted, stored in the file itself.
+Obviates the need to actually delete the data
+
+* Store the address of the first deleted record in the file header
+* Use this first record to store the address of the second deleted record, and so on
+* Stored addresses ~= pointers
+* Can reuse space for normal attributes of free records to store pointers

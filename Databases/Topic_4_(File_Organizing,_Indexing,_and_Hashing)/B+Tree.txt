@@ -1,0 +1,87 @@
+Content-Type: text/x-zim-wiki
+Wiki-Format: zim 0.4
+Creation-Date: 2019-10-07T14:37:56-05:00
+
+====== B+Tree ======
+Created Monday 07 October 2019
+
+Similar to [[Topic 4 (File Organizing, Indexing, and Hashing):B-Tree|B-Tree]]
+
+=== Index Structure ===
+* A search key value may appear more than once
+* Data pointers are stored at leaf nodes only
+* Every search key value appears once at the leaf level
+* Leaf nodes are linked together to facilitate ordered access on search key values
+* Effecient for random search and ranged search
+
+=== Insertion Procedure ===
+* Search for a leaf node L that is supposed to store key K
+* if L has (n - 1) values, then it is ful
+	* Split L into 2 nodes
+	* Put \ceil(n/2) - 1 values into existing node
+	* Put the rest of the values into the new nodes
+	* put the smallest value in the new node into the parent
+	* if the parent is full, recursion
+	* If the middle node isn't balanced, remove the smallest key (if it's not a leaf) - see example, this isn't inthe slide, even though she does it.
+
+== Example ==
+Insert 8, 5, 1, 7, 3, 12, 9, 6
+Tree order n = 3
+min # = 1
+max # = 2
+Note: + is a pointer pointing down, ' is an empty pointer, and = is a pointer pointing across
+Insert 8:
+[B_{8 }| 8 | ' ]
+Insert 5:
+[B_{5 }| 8 | B_{8 }| 8 | ' ]
+Insert 1:
+	[+5+]
+[1]		[5 | 8 ]
+Insert 7:
+			[+|5| 7 |+]
+[B_{1 }| 1 | = ]	[B_{5} | 5 | B_{7} | 7 | =]	[ B_{8} | 8 | + ]
+Insert 3:
+		[5 | 7]
+[1 | 3]	[5]	[7 | 8]
+Insert 12:
+		[5 | 7 | 8]
+[1 | 3 ]	[5 ] 	[7]	[ 8 | 12]	// insert  12, split right node
+// parent is now full, so split it
+				   [7]
+		[5]		[7 | 8]	// this is a problem, because there's only 2 subtrees but 3 keys
+[1 | 3 ]	[5]       [7]	[8 | 12]
+			[7]
+		[5]		   [8]
+[1 | 3 ]	[5]       [7]	[8 | 12]
+Insert 9:
+			   [7]
+		[5]		   [8]
+[1 | 3 ]	[5]         [7]	[8 | 9 | 12]
+
+			   [7]
+		[5]		      [8 | 9]
+[1 | 3 ]	[5]           [7]	[8] 	[9 | 12]
+Insert 6:
+			   [7]
+		[5]		      [8 | 9]
+[1 | 3 ]	[5 | 6]      [7]	[8] 	[9 | 12]
+
+=== Deletion ===
+
+== Example ==
+			   [7]
+		[5]		      [8 | 9]
+[1 | 3 ]	[5 | 6]      [7]	[8] 	[9 | 12]
+Delete 9:
+			   [7]
+		[5]		      [8]
+[1 | 3 ]	[5 | 6]      [7]	[8 | 12]
+Delete 12:
+			   [7]
+		[5]		      [8]
+[1 | 3 ]	[5 | 6]      [7]	[8]
+Delete 8:
+		  [5|7]
+[1 | 3 ]	[5 | 6]      [7]
+
+

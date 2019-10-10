@@ -1,0 +1,7 @@
+graph G {
+instructor [shape=box]
+student [shape=box]
+advisor [shape=diamond]
+instructor -- advisor -- student
+advisor -- student
+}

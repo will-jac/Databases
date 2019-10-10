@@ -1,0 +1,37 @@
+Content-Type: text/x-zim-wiki
+Wiki-Format: zim 0.4
+Creation-Date: 2019-08-19T13:31:49-05:00
+
+====== Syllabus Day ======
+Created Monday 19 August 2019
+
+Class attendance mandatory, graded via occasional canvas quizzes
+need to find a group (3-5 people) for group work
+
+Overview of the course:
+
+* Database applications and purposes of database systems
+	* [[Topic 1 (Overview)]]
+	* Drawbacks of using file systems to store data
+* Abstraction and data models
+	* Levels of abstraction
+	* Views of data
+	* Instances and schemas
+	* Data Models
+* Relational model and dataase languages
+	* Relational model
+	* Data definition language
+	* SQL
+* Database design
+	* Database design
+	* Entity Relationship Model
+* Database system internals and architectures
+	* Storage management
+	* Query processing
+	* Transaction management
+	* DBA responsibilities
+	* Database system internals
+	* Database system architectures
+* Database system evolution
+	* History of database systems
+	* When not to use a database system

@@ -1,0 +1,18 @@
+Content-Type: text/x-zim-wiki
+Wiki-Format: zim 0.4
+Creation-Date: 2019-10-02T13:46:23-05:00
+
+====== Fixed-Length Records ======
+Created Wednesday 02 October 2019
+
+* Assume record size is fixed
+* Each file has records of some particular type only
+* Different files are used for different relations
+* Then:
+	* Store record **i** starting from byte **n* (i - 1)**, where **n **is the size of each record
+	* Record access is simple, but records may "cross blocks"
+		* Can dissallow with a modification
+	* Deletion of record **i**: 
+		* Move records **i + 1, ... ,  n **to **i, ..., n -1**
+		* Move record **n** to **i**
+		* Do not move records, but link all free records on a [[free list]]

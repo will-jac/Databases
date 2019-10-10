@@ -1,0 +1,29 @@
+Content-Type: text/x-zim-wiki
+Wiki-Format: zim 0.4
+Creation-Date: 2019-10-02T13:59:15-05:00
+
+====== Variable Length Records ======
+Created Wednesday 02 October 2019
+
+* Arise from:
+	* Storage of multiple record types in a file
+	* Record types that allow variable lengths (eg varchar)
+	* Record types that allow repeating fields (eg arrays)
+* Issues:
+	* How to represent a single record in a way that individual attributes can be easily extracted
+	* How to store variable-length records in a block such that records in a block can be easily extracted
+* Variable length attributes are represented by fixed size (offset, length) with actual data stored after all fixed length attributes
+* Null values are represented by a null-value bitmap
+* eg:
+{{.\4-var-len-rec.PNG?width=400}}
+
+* they have a slotted page structure, eg:
+{{.\4-slotted-page-structure.PNG?width=500}}
+* Header contains:
+	* Number of record entries
+	* end of free space on the bloc
+	* location and size of each record
+* Records can be moved around to keep them continuous with no empty space between them
+	* entry in the header must be updated
+* pointers should point to the entry for the record in the header rather than directly to the record
+

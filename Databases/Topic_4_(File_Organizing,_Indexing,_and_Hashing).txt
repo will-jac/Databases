@@ -1,0 +1,143 @@
+Content-Type: text/x-zim-wiki
+Wiki-Format: zim 0.4
+Creation-Date: 2019-10-02T13:38:08-05:00
+
+====== Topic 4 (File Organizing, Indexing, and Hashing) ======
+Created Wednesday 02 October 2019
+
+* Database is a collection of files
+* Each file is a sequence of records
+* Each record is a sequence of fields
+* One (simple) approach: [[Fixed Length Records]]
+* Can also use (more complicated) [[Topic 4 (File Organizing, Indexing, and Hashing):Variable Length Records|Variable Length Records]]
+
+==== Organizing Records in a File ====
+Goal: effecient file organization to improve query processing
+
+=== Heap File ===
+AKA Pile File
+* Records are placed in a file in the order they are inserted
+* New records are inserted at the end of the file
+* Effecient in insertion
+* Slow in searching
+* Use: Insert now, tune later
+
+=== Sequential File ===
+AKA Ordered File
+* Records are placed in the file in **search-key** order
+* Slow insertion
+* Fast search (for the search key)
+* Insertion
+	* Locate the position where the record should be inserted
+		* If there is free space, insert
+		* If no free space, insert in an overflow block
+	* Update the pointer chain
+* Deletiton:
+	* User pointer chains
+* Need to occasionally reorganize the file to restore sequential order (from the overflow block)
+
+=== Index-Sequential File ===
+Facilitates search on search keys
+Performance degrades as the file grows, both for index lookups and sequential scans through the data
+
+* Main data file: a sequential file storing complete tuples stored on a search key
+* Index: Primary index and Secondary index
+	* Index files are typically much smaller than the original file
+		* Primary index: index built on the search key of the main data file
+		* Search key of a primary index is usually (but not necessarily) the primary key
+		* Also called clustering index
+	* Secondary index
+		* index build on other attributes in the main data file
+		* Also called non-clustering index
+
+(generally)
+* Primary index is based on primary key value
+* Secondary index is based on a secondary key value (non-ordering field)
+* secondary key can be a candidate (eg licence_number) or non-candidate (eg car_color) key
+
+== Dense Index Files ==
+Dense Index - index record appears for every search-key value in the file
+
+== Sparse Index Files ==
+Sparse Index - contains index records for only some search-key values
+* Applicable when records are sequentially ordered on search-key
+* To locate a record with search-key value K, we:
+	* Find index record with the largest search-key value < k
+	* Search file sequentially starting at the record to which the index record points
+
+Compared to dense indices:
+* Less space, maintenance overhead for insertions / deletions
+* Generally slower on search (due to IO overhead)
+* **good tradeoff**:
+	* Sparse index with an index entr for every block in file, corresponding to the least search-key value in block
+
+== Primary & Secondary Indices ==
+* Offer substantial benefits when searching for records
+* Updating indices imposes overhead on database modification - need to update every index when a file is changed
+* Sequential scan with primary index == effecient
+* Sequential scan with secondary index == expensive
+	* Block fetch = milliseconds
+	* index fetch = nanoseconds
+
+**Secondary indices**
+* Index record points to a bucket that contains pointers to all the actual records with that search-key value
+* Secondary indices must be dense (primary indices need not be)
+
+== Multilevel indices ==
+* If a primary index does not fit in memory, access is expensive
+* Solution:
+	* Treat primary index kept on disk as a sequential file and construct a sparse index on it
+		* outer index = sparse index of the primary index
+		* inner index = primary index file
+	* Can create multiple layers if even outer index is too large
+	* Indices at all levels must be updated for insertion / deletion from this file
+
+
+=== B Tree / B+ Tree ===
+Works well despite insertions and deletions
+
+Idea: view the array of data as a tree
+
+B+ Tree: 
+* each leaf node has a pointer to the next leaf node
+* only has pointers to the main files in the leaf nodes 
+	* rest of tree just points to various internal / leaf nodes
+
+Main file: [[Topic 4 (File Organizing, Indexing, and Hashing):B-Tree|B-Tree]] , [[Topic 4 (File Organizing, Indexing, and Hashing):B+Tree|B+Tree]]
+{{.\B-Tree.PNG?width=700}}
+
+=== Comparision: ===
+Typically, a B+ Tree is better
+
+== B-Tree Advantages ==
+* B-Tree may use fewer tree nodes than a corresponding B+Tree
+* Sometimes possible to find the search-key value before reaching leaf nodes
+
+== B-Tree Disadvantages: ==
+* Only a small fraction of all search-key values are found early
+* Non-leaf nodes are larger, so fan-out is reduced
+	* B-trees typically have greater depth than B+Tree
+* Insertion / Deletion are more complicated
+* Implemenation is harder
+
+==== Multi-Key Access using Indices on Single Attributes ====
+* Use multiple indices for certain types of queries, eg:
+select ID
+from Instructor
+where dept_name="finance" and salary= 8000
+* strategies:
+	* Use index on dept_name to find instructors with dept name Finance, test salary = 8000
+	* Use index on salary to find instructors with salary 8000, test dept_name="Finance"
+	* Use dept_name index to find pointers to finance, and salary index to find pointers to 8000. Take intersection of the sets of pointers.
+
+===== Hashing =====
+* Hash function h on search key k : h(k) = bucket address
+* used to locate records for access, insertion, and deletion
+* records with different search-key values can map to the same bucket, so much search the bucket sequentially
+* Need to preallocate a ton of space (all the buckets that the hash function could possibly use)
+
+Questions:
+* Good for random or range?
+	* Great for random, not good for range
+
+

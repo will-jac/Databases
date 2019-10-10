@@ -1,0 +1,196 @@
+Content-Type: text/x-zim-wiki
+Wiki-Format: zim 0.4
+Creation-Date: 2019-08-19T14:33:10-05:00
+
+====== Topic 1 (Overview) ======
+Created Monday 19 August 2019
+
+* DBMS contains information about a particular enterprise
+	* collection of //interrelated// data
+	* set of programs to access the data
+	* an environment that is both //convenient// and //efficient// to use
+* Databases have applications everywhere
+* Databases can be very large
+
+* University Database Example
+	* application program examples
+		* add new students, instructors, courses
+		* register students for courses, generate class rosters
+		* assign grades to students, compute GPA, generate transcrips
+
+Originally, database applications (DBA) were built directly on top of file systems
+
+=== Drawbacks of a file system ===
+* redundancy
+	* multiple file formats, data duplication in different files
+* inconsistency
+* hard to access
+	* need to write a new program to carry out each task
+* isolated
+	* multiple files and formats
+* integrity problems
+	* constraints become buried in program code rather than stated explicitly
+	* hard to add new constraints or change existing ones
+* atomicity of updates
+	* failures may leave database in an inconsistent state with partial updates
+	* exmple: transfering funds between accounts
+* concurrent access by multiple users
+	* concurrency == performance
+	* uncontrolled concurrent accesses can lead to inconsistency
+* security problems
+	* hard to provide a user access to just some data
+
+===== Terminology =====
+* similar to types and variables
+
+=== Schema ===
+The logical structure of the database
+* example: the database consists of information about a set of customers and accounts and the relationship between them
+* Analogous to the information of a variable in a program
+* Doesn't change much
+* **Physical schema:** database design at the physical level
+* **Logical schema:** database design at the logical level
+
+=== Instance ===
+The actual content of the database at a particular point in time
+* Analogous to the value of a variable
+
+=== Physical Data Independence ===
+The ability to modify the physcial schema without changing the logical schema
+* Applications depend on logical schema
+* In general, the interfaces between the various levels and components should be well defined so that changes in some parts do not seriously influence others.
+
+
+===== Data Models =====
+
+Ways to describe / define / design your schema, basically
+* different database languages / platforms use certain model(s)
+	* just like languages, ie imperative vs declarative, procedural vs OOP
+
+* A collection of tools for describing
+	* data
+	* data relationships
+	* data semantics
+	* data constraints
+* Relational model
+* Entity - relationship model (for database design)
+* Object-based data models
+* Semistructured data model (XML)
+* Other, older models:
+	* Network model
+	* Hierarchical model
+
+=== Relational Model ===
+* chapter 2
+* tabular data basically
+* Columns = attributes, rows = tuple, hold data
+* usually have more than one table
+	* tables hold relationships between them - this is the hard part of design
+	* cardinality of the relationships is very important
+
+=== Data Definition Language (DDL) ===
+* specification notation for defining the database schema
+	Example:
+	''create table ''//instructor //''(''
+		//ID//		''char(5),''
+		//name//		''varchar(20),''
+		//dept_name//	''varchar(20),''
+		//salary//		''numeric(8,2))''
+
+* DDL compiler generates a set of table templats stored in a //data dicionary//
+* Data dictionary contains metadata
+	* Database schema
+	* Integrity constraints
+	* Primary key (ID uniquely identifies instructors
+	* Referential integrity (**references** constraint in SQL)
+		* e.g. //dept_name// value in any //instructor// tuple must appear in //department// relation
+	* Authorization
+
+* primary key = single unique key
+
+
+=== SQL ===
+Widely used non-procedural language
+Application programs generally access data through SQL + some other language (ie java)
+
+bad design = cannot insert data, loose data, redundancy
+
+
+===== Design Approaches =====
+* Normalization Theory (ch 7)
+	* Formalize qhat designs are bad and test for them 
+* Entity Relationship Model (ch 6 - [[Topic 2 (Entity Relationship Model)|Topic 2]])
+	* Models an enterprise as a collection of entites and relationships
+
+==== Storage Management ====
+* Storage manager is a program modul that provides the interface between the low-level data stored in the database and the application programs and queries submitted to the system
+* Responsible for:
+	* Iteraction with the file manager
+	* Efficient storing, retrieving, and updating of data
+* Issues:
+	* Storage access, file organization
+	* Indexing and hashing
+
+==== Query Processing ====
+1. Parsing and translation
+2. Optimization
+3. Evaluation
+
+
+Optimization == very important bc users probably won't write efficient SQL statements
+{{~\Dropbox\College\Fall 2019\CS 4513 Database\Attachments\1-Query-Processing.PNG?width=400}}
+
+==== Transaction Management ====
+* What if the sytem fails?
+* What if more than one user is concurrently updating the same data?
+* A **transaction** is a collection of operations that performs a single logical function in a database application
+* **Transaction-management component** ensures that the database remains in a consistent (correct) state despite system failures (eg OS crash, power loss) and transaction failures
+* **Concurrency-control manager **controls the interaction among the concurrent transactions to ensure consistency
+
+==== Database Administrator (DBA) ====
+A person who has central control over the system is called a dabase administrator (DBA), whose functions are:
+* Schema definition
+* Storage structure and access-method definition
+* Schema and physical-organization modification
+* Granting of authorization for data access
+* Routine maintenance
+* Periodically backing up the database
+* Ensuring there's enough space
+* Monitorin the database, ensuring performance is good
+
+
+==== Database System Internals ====
+{{~\Dropbox\College\Fall 2019\CS 4513 Database\Attachments\1-DB-Internals.PNG?width=500}}
+
+
+
+
+==== Database Architecture ====
+
+The architecture of a DBS is very influence by the underlying system on which it is running
+* Centralized
+* Client-Server
+* Parallel (multi-processor
+* Distributed
+
+=== Client-Server ===
+
+{{~\Dropbox\College\Fall 2019\CS 4513 Database\Attachments\1-Client-Server.PNG?width=400}}
+
+
+
+
+==== When not to use a DBMS? ====
+* Overhead
+	* DBMS components: concurrency controll, recover, integrity, etc
+	* Initial investment: software, hardware, training
+	* Generality of DBMS
+* Additionally:
+	* DBMS design is hard, and bad design is hard to diagnose / fix
+	* DBMS implementation can be done bad
+
+In other words:
+* when the DB and application are simple and well definied
+* time-critical apps
+* multi-user access to data is not required
+
