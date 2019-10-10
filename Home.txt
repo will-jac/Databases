@@ -1,0 +1,12 @@
+Content-Type: text/x-zim-wiki
+Wiki-Format: zim 0.4
+Creation-Date: 2019-10-10T10:22:06-05:00
+
+====== Home ======
+Created Wednesday 09 October 2019
+
+[[Databases:Topic 1 (Overview)|Topic 1]]
+[[Databases:Topic 2 (Entity Relationship Model)|Topic 2]]
+[[Databases:Topic 3 (Relational Model)|Topic 3]]
+[[Databases:Topic 4 (File Organizing, Indexing, and Hashing)|Topic 4]]
+[[Databases:Topic - Midterm Review 1|Midterm 1 Review]]
