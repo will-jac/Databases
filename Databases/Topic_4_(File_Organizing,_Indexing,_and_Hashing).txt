@@ -11,10 +11,10 @@ Created Wednesday 02 October 2019
 * One (simple) approach: [[Fixed Length Records]]
 * Can also use (more complicated) [[Topic 4 (File Organizing, Indexing, and Hashing):Variable Length Records|Variable Length Records]]
 
-==== Organizing Records in a File ====
+===== Organizing Records in a File =====
 Goal: effecient file organization to improve query processing
 
-=== Heap File ===
+==== Heap File ====
 AKA Pile File
 * Records are placed in a file in the order they are inserted
 * New records are inserted at the end of the file
@@ -22,7 +22,7 @@ AKA Pile File
 * Slow in searching
 * Use: Insert now, tune later
 
-=== Sequential File ===
+==== Sequential File ====
 AKA Ordered File
 * Records are placed in the file in **search-key** order
 * Slow insertion
@@ -93,7 +93,7 @@ Compared to dense indices:
 	* Indices at all levels must be updated for insertion / deletion from this file
 
 
-=== B Tree / B+ Tree ===
+==== B Tree / B+ Tree ====
 Works well despite insertions and deletions
 
 Idea: view the array of data as a tree
@@ -120,7 +120,7 @@ Typically, a B+ Tree is better
 * Insertion / Deletion are more complicated
 * Implemenation is harder
 
-==== Multi-Key Access using Indices on Single Attributes ====
+=== Multi-Key Access using Indices on Single Attributes ===
 * Use multiple indices for certain types of queries, eg:
 select ID
 from Instructor
@@ -130,7 +130,7 @@ where dept_name="finance" and salary= 8000
 	* Use index on salary to find instructors with salary 8000, test dept_name="Finance"
 	* Use dept_name index to find pointers to finance, and salary index to find pointers to 8000. Take intersection of the sets of pointers.
 
-===== Hashing =====
+==== Hashing ====
 * Hash function h on search key k : h(k) = bucket address
 * used to locate records for access, insertion, and deletion
 * records with different search-key values can map to the same bucket, so much search the bucket sequentially
@@ -139,5 +139,96 @@ where dept_name="finance" and salary= 8000
 Questions:
 * Good for random or range?
 	* Great for random, not good for range
+
+=== Overflows ===
+When a bucket overflows, we need to chain together additional buckets into a linked list
+
+=== static hashing ===
+* In static hashing, function //h// maps search-key values to a fixed set of //B// bucket addresses.
+* Databases grow or shrink over time
+	* If the initial # of buckets is too small, performance degrades due to overflows
+	* If the space is correct, a significant amound of space will be waster initially
+	* If db shrinks, space is again wasted
+* One solution: periodically re-organize the file with a new hash function
+	* expensive & disruptime
+* Better: dynamically change the # of buckets
+
+=== dynamic hashing ===
+* Dynamically adjust the hash function as the DB size grows / shrinks
+* number of buckes needed grows / shrinks as needed
+* On deletion, combine buckets, on insert, split buckets (as needed)
+	* use the right bits of the hash function to determine what to combine, eg combine 1001 and 0001
+	* two buckets are buddy buckets if they:
+		* have x bits in common
+		* are eligible for combination (eg bucket_max_length >= bucket1_length + bucket2_length)
+* Don't really understand how that works / what she was trying to show
+
+* Advantages:
+	* Don't need an overflow -> performance does not degrade as the DB grows
+	* Minimal space overhead (need a directory, but it's very small)
+	* No buckets need to be reserved in advanced for future growth
+* Disadvantages:
+	* Key lookup involves additional access to the directory
+		* Needs to sit in main memory, probably
+
+==== Ordered Indexing vs Hashing ====
+* Cost of periodic re-organization
+* Relative requency of insertsions and deletioins
+* Desirable to optimize average access at cost of wors-case?
+* Expected type of queries:
+	* hashing good at specific value
+	* indexes better for range
+
+==== Multitable Clustering ====
+* Used to optimize queries involving joins of two tables
+* Effectively joins the tables in the cluster
+* good for queries involving both department and instructor (both tables)
+* bad for queries involving only depatrment (one table)
+* results in variable size records
+* can add pointer chains to link records of a particular relation
+{{.\Multitable1.PNG?width=400}}
+{{.\Multitable2.PNG?width=400}}
+
+
+===== Deciding on a File Organization =====
+* Type of queries
+	* Random Search (Hash)
+	* Range Search (Index)
+	* Insertion (Heap)
+	* Deletion
+* Frequencies of queries
+* Access time
+* Insertion time
+* Deletion time
+* Space overhead
+
+== Example: ==
+Given the tables:
+* Students(**id**, name, address)
+* Courses(**courseno**, coursename, sec)
+* Enroll(**id, courseno**)
+* Dept(**deptname**, budget)
+and queries:
+1. Insert a new student and associate them with a course
+	* 50/day
+2. Insert a new course
+	* 100/month
+3. Find all students who take course no 123
+	* 10/day
+4. Insert department
+	* 1/year
+5. Find all departments whose budget is between 1,000,000 and 10,000,000
+	* 6/month 
+What file organization is most approriate?			
+| Table Name | Query # - Type    | Search Key | Frequency | File organization                                                        |
+|------------|-------------------|------------|-----------|--------------------------------------------------------------------------|
+| Students   | 1 - Insertion     | -          | 50/day    |                                                                          |
+|            | 3 - Random Search | ID         | 10/day    | Extendable Hash Table with key: ID                                       |
+| Courses    | 2 - Insertion     | -          | 3/day     | If courseno, ID are not foreign keys, this is the only query, use a heap |
+|            | 1 - Random Search | courseno   | 50/day    | Extendable Hash Table with key: courseno                                 |
+| Enroll     | 1 - Insertion     | -          | 50/day    |                                                                          |
+|            | 3 - Random Search | courseno   | 10/day    | Extendable Hash Table with key: courseno                                 |
+| Dept       | 4 - Insertion     | -          | 1/year    |                                                                          |
+|            | 5 - Ranged Search | budget     | 6/month   | B+ Tree or Index-Sequential file with search key budget                  |
 
 
